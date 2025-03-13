@@ -14,25 +14,25 @@ public:
 class ElfWeapon : public IWeapon {
 public:
     void use() const override {
-        std::cout << "Using an elven bow!" << std::endl;
+        std::cout << "Использование эльфийского лука" << std::endl;
     }
 };
 class ElfArmor : public IArmor {
 public:
     void wear() const override {
-        std::cout << "Wearing elven light armor!" << std::endl;
+        std::cout << "Надета легкая эльфийская броня" << std::endl;
     }
 };
 class OrcWeapon : public IWeapon {
 public:
     void use() const override {
-        std::cout << "Using an orcish axe!" << std::endl;
+        std::cout << "Использование топора орка" << std::endl;
     }
 };
 class OrcArmor : public IArmor {
 public:
     void wear() const override {
-        std::cout << "Wearing orcish heavy armor!" << std::endl;
+        std::cout << "Надета тяжелая броня орка" << std::endl;
     }
 };
 class ICharacterFactory {
@@ -69,9 +69,9 @@ void createCharacter(const ICharacterFactory& factory) {
 int main() {
     ElfFactory elfFactory;
     OrcFactory orcFactory;
-    std::cout << "Creating an elf character:" << std::endl;
+    std::cout << "Создание эльфа" << std::endl;
     createCharacter(elfFactory);
-    std::cout << "\nCreating an orc character:" << std::endl;
+    std::cout << "\nСоздания орка" << std::endl;
     createCharacter(orcFactory);
     return 0;
 }
@@ -90,7 +90,7 @@ private:
 public:
     Investor(const std::string& name) : name(name) {}
     void update(float newPrice) override {
-        std::cout << "Investor " << name << " notified. New stock price: " << newPrice << std::endl;
+        std::cout << "Инвестор " << name << "уведомлен о новой цене: " << newPrice << std::endl;
     }
 };
 class Stock {
