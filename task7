@@ -1,0 +1,130 @@
+//1 Создание персонажей игры
+#include <iostream>
+#include <memory>
+class IWeapon {
+public:
+    virtual ~IWeapon() = default;
+    virtual void use() const = 0;
+};
+class IArmor {
+public:
+    virtual ~IArmor() = default;
+    virtual void wear() const = 0;
+};
+class ElfWeapon : public IWeapon {
+public:
+    void use() const override {
+        std::cout << "Using an elven bow!" << std::endl;
+    }
+};
+class ElfArmor : public IArmor {
+public:
+    void wear() const override {
+        std::cout << "Wearing elven light armor!" << std::endl;
+    }
+};
+class OrcWeapon : public IWeapon {
+public:
+    void use() const override {
+        std::cout << "Using an orcish axe!" << std::endl;
+    }
+};
+class OrcArmor : public IArmor {
+public:
+    void wear() const override {
+        std::cout << "Wearing orcish heavy armor!" << std::endl;
+    }
+};
+class ICharacterFactory {
+public:
+    virtual ~ICharacterFactory() = default;
+    virtual std::unique_ptr<IWeapon> createWeapon() const = 0;
+    virtual std::unique_ptr<IArmor> createArmor() const = 0;
+};
+class ElfFactory : public ICharacterFactory {
+public:
+    std::unique_ptr<IWeapon> createWeapon() const override {
+        return std::make_unique<ElfWeapon>();
+    }
+    std::unique_ptr<IArmor> createArmor() const override {
+        return std::make_unique<ElfArmor>();
+    }
+};
+class OrcFactory : public ICharacterFactory {
+public:
+    std::unique_ptr<IWeapon> createWeapon() const override {
+        return std::make_unique<OrcWeapon>();
+    }
+
+    std::unique_ptr<IArmor> createArmor() const override {
+        return std::make_unique<OrcArmor>();
+    }
+};
+void createCharacter(const ICharacterFactory& factory) {
+    auto weapon = factory.createWeapon();
+    auto armor = factory.createArmor();
+    weapon->use();
+    armor->wear();
+}
+int main() {
+    ElfFactory elfFactory;
+    OrcFactory orcFactory;
+    std::cout << "Creating an elf character:" << std::endl;
+    createCharacter(elfFactory);
+    std::cout << "\nCreating an orc character:" << std::endl;
+    createCharacter(orcFactory);
+    return 0;
+}
+//2 Система уведомлений в биржевом приложении
+#include <iostream>
+#include <vector>
+#include <memory>
+class IObserver {
+public:
+    virtual ~IObserver() = default;
+    virtual void update(float newPrice) = 0;
+};
+class Investor : public IObserver {
+private:
+    std::string name;
+public:
+    Investor(const std::string& name) : name(name) {}
+    void update(float newPrice) override {
+        std::cout << "Investor " << name << " notified. New stock price: " << newPrice << std::endl;
+    }
+};
+class Stock {
+private:
+    std::vector<std::shared_ptr<IObserver>> observers;
+    float price;
+public:
+    Stock(float initialPrice) : price(initialPrice) {}
+    void attach(const std::shared_ptr<IObserver>& observer) {
+        observers.push_back(observer);
+    }
+    void detach(const std::shared_ptr<IObserver>& observer) {
+        observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
+    }
+    void setPrice(float newPrice) {
+        price = newPrice;
+        notifyObservers();
+    }
+    void notifyObservers() {
+        for (const auto& observer : observers) {
+            observer->update(price);
+        }
+    }
+};
+int main() {
+    Stock appleStock(150.0f);
+    auto investor1 = std::make_shared<Investor>("Alice");
+    auto investor2 = std::make_shared<Investor>("Bob");
+    appleStock.attach(investor1);
+    appleStock.attach(investor2);
+    appleStock.setPrice(155.0f);
+    appleStock.setPrice(160.0f);
+    appleStock.detach(investor1);
+    appleStock.setPrice(165.0f);
+    return 0;
+}
+
